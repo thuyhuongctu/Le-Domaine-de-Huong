@@ -1,0 +1,83 @@
+Copyright © 2026 Đỗ Thùy Hương (Do Thuy Huong; GitHub: thuyhuongctu). All rights reserved.
+Bản quyền © 2026 Đỗ Thùy Hương. Bảo lưu mọi quyền.
+
+ENGLISH
+
+This repository and the web page it produces — the source code, the written
+content, the layout, architecture and lighting of the 3D scene, the eight zone
+designs and their signboards, the five gameplay modules, the recorded narration
+in the author's own voice, and the artwork in assets/img/ — are the copyrighted
+work of the author, and of the author alone.
+
+The material is published so that it can be read, consulted and cited. It is
+NOT released under an open-source or open-content licence.
+
+No permission is granted to copy, redistribute, republish, mirror, modify,
+adapt, translate, or create derivative works from this material, in whole or in
+part, for commercial or non-commercial purposes, without the prior written
+permission of the author. Automated bulk collection of the material, and its
+use for training machine-learning models, are likewise not permitted without
+prior written permission.
+
+Quotation of short extracts for academic purposes, with attribution and a
+citation to the record identified in CITATION.cff, is permitted under normal
+scholarly practice and applicable copyright exceptions.
+
+Third-party components included in this repository remain governed by their own
+licences and are not covered by the reservation above. The full inventory, with
+sources and the extent of any modification, is in THIRD-PARTY.md:
+
+  - three.js (r128), assets/vendor/three-r128.min.js — MIT Licence,
+    Copyright © 2010-2021 three.js authors, used unmodified;
+    licence text in assets/vendor/three-LICENSE.txt
+  - GLTFLoader (three.js r128), assets/vendor/GLTFLoader-r128.js — MIT
+    Licence, three.js authors, used unmodified
+  - Kenney Nature Kit 2.1 palm models, assets/models/kenney/*.glb — CC0 1.0;
+    licence text in assets/models/kenney/LICENSE-kenney-nature-kit.txt
+  - the tower scene, assets/canh/thap.html — a derivative work of ThreeUI
+    by Meng To, MIT Licence, Copyright © 2026 Meng To; licence text in
+    assets/vendor/threeui-LICENSE.txt
+  - Baloo 2 and Be Vietnam Pro typefaces, assets/fonts/ — SIL Open Font
+    Licence 1.1; licence texts in assets/fonts/OFL-Baloo2.txt and
+    assets/fonts/OFL-BeVietnamPro.txt
+
+Nothing in this repository is jointly owned. The fifteen-second Mekong Sunfire
+excerpt that appears in the music panel of the same scene on the author's
+homepage belongs to a recording jointly owned by Đỗ Thùy Hương and Phan Anh Tú,
+and has been deliberately left out of this repository so that the work archived
+here is of sole authorship.
+
+Enquiries: contact@jemappellehuong.com
+
+
+TIẾNG VIỆT
+
+Kho này và trang web nó sinh ra — mã nguồn, nội dung chữ, bố cục, kiến trúc và
+ánh sáng của cảnh 3D, tạo hình tám khu cùng biển chỉ đường, năm mô-đun trò chơi,
+phần lời dẫn thu bằng chính giọng tác giả, và tranh trong assets/img/ — là tác
+phẩm thuộc bản quyền của tác giả, và chỉ một mình tác giả.
+
+Công trình được công bố để đọc, tham khảo và trích dẫn. KHÔNG phát hành theo
+giấy phép mã nguồn mở hay nội dung mở.
+
+Không cho phép sao chép, phát tán lại, đăng lại, tạo bản sao lưu công khai,
+sửa đổi, phóng tác, dịch, hay tạo tác phẩm phái sinh từ tài liệu này, dù toàn
+bộ hay một phần, vì mục đích thương mại hay phi thương mại, nếu không có sự
+đồng ý trước bằng văn bản của tác giả. Việc thu thập tự động hàng loạt, và việc
+dùng tài liệu này để huấn luyện mô hình học máy, cũng không được phép nếu chưa
+có đồng ý trước bằng văn bản.
+
+Trích dẫn đoạn ngắn cho mục đích học thuật, có ghi nguồn và dẫn chiếu tới bản
+ghi nêu trong CITATION.cff, được phép theo thông lệ học thuật và các ngoại lệ
+của pháp luật về quyền tác giả.
+
+Các thành phần của bên thứ ba đi kèm trong kho này vẫn chịu giấy phép riêng của
+chúng và không thuộc phạm vi bảo lưu nói trên; bản kiểm kê đầy đủ ở
+THIRD-PARTY.md.
+
+Không có phần nào trong kho này là đồng sở hữu. Đoạn trích 15 giây «Mekong
+Sunfire» xuất hiện trong bảng âm nhạc của chính cảnh này trên trang cá nhân
+thuộc một bản thu đồng sở hữu giữa Đỗ Thùy Hương và Phan Anh Tú, và đã được cố
+ý loại khỏi kho này để tác phẩm lưu trữ tại đây là của một tác giả duy nhất.
+
+Liên hệ: contact@jemappellehuong.com

@@ -1,0 +1,411 @@
+/* ============================================================
+   HUONG MUSIC - hệ thống âm nhạc «Je suis Hương»
+   (1) Nút nhạc nổi: gợi ý bài hát theo tâm trạng (buồn/vui/bình thường)
+   (2) Nhạc nền theo bối cảnh từng khu trong trang viên 3D
+   Bản tách «Trang viên tri thức»: chỉ giữ hai bản solfeggio của khuôn viên.
+   Songbook, M-AIDA và BizOn nghe ở trang nhạc trên jemappellehuong.com.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  /* ---------- DANH SÁCH BÀI HÁT ---------- */
+  var A = 'assets/audio/';
+  var SONGS = {
+    tranquien_528:   { t: 'Trần viên · Sóng 528Hz',        f: A + 'solfeggio_528.mp3' },
+    tranquien_432:   { t: 'Trần viên · Sóng 432Hz',        f: A + 'solfeggio_432.mp3' }
+  };
+
+  /* ---------- GỢI Ý THEO TÂM TRẠNG ---------- */
+  /* mood: 'buon' | 'vui' | 'binhthuong'
+     Nguồn chính: Songbook «Je m'appelle Hương» (5 bài · 12 bản thu)
+     Bài M-AIDA / BizOn có sẵn làm bài bổ sung */
+  var MOODS = {};   /* kho tach khong kem songbook - xem trang nhac */
+
+  var NG = 'vi';
+  try {
+    NG = localStorage.getItem('huong_lang') || 'en';   /* mặc định tiếng Anh */
+  } catch (e) { NG = 'vi'; }
+
+  /* ---------- ENGINE ---------- */
+  var audio = new Audio();
+  audio.preload = 'metadata';
+
+  /* ---------- ANALYSER (cho visualizer 3D) ---------- */
+  var analyser = null;
+  var fftData = null;
+  try {
+    var Ctx = window.AudioContext || window.webkitAudioContext;
+    if (Ctx) {
+      var actx = new Ctx();
+      analyser = actx.createAnalyser();
+      analyser.fftSize = 64;   // 32 bins tần số
+      analyser.smoothingTimeConstant = 0.72;
+      actx.createMediaElementSource(audio).connect(analyser);
+      analyser.connect(actx.destination);
+      fftData = new Uint8Array(analyser.frequencyBinCount);
+    }
+  } catch (e) { analyser = null; }
+
+  function getFFT() {
+    if (!analyser || !fftData) return { bass: 0, mid: 0, treble: 0, wave: 0 };
+    analyser.getByteFrequencyData(fftData);
+    var n = fftData.length;
+    var bass = 0, mid = 0, treble = 0;
+    // bass: 4 bins đầu, mid: giữa, treble: 4 bins cuối
+    for (var i = 0; i < 4 && i < n; i++) bass += fftData[i];
+    for (var i = Math.floor(n * 0.3); i < Math.floor(n * 0.65); i++) mid += fftData[i];
+    for (var i = Math.max(4, n - 4); i < n; i++) treble += fftData[i];
+    return {
+      bass: bass / (4 * 255),
+      mid: mid / (Math.floor(n * 0.65) - Math.floor(n * 0.3)) / 255,
+      treble: treble / (4 * 255),
+      wave: (bass + mid + treble) / 3
+    };
+  }
+  var vol = 0.75;
+  try {
+    var sv = parseFloat(localStorage.getItem('huong_music_vol'));
+    if (!isNaN(sv)) vol = sv;
+  } catch (e) { }
+  audio.volume = vol;
+  var dangPhat = '';   // key bài đang phát
+  var dangMood = '';   // mood hiện tại để tự động chuyển bài
+  var fader = null;    // interval fade
+  var nhacNenActive = false;
+  var nhapVi_widget = null;
+
+  function fadeTo(target, ms) {
+    if (fader) clearInterval(fader);
+    var step = 0.03, dt = 50, per = step * (1000 / dt);
+    var cur = audio.volume;
+    if (Math.abs(cur - target) < 0.01) { audio.volume = target; return; }
+    var dir = target > cur ? 1 : -1;
+    fader = setInterval(function () {
+      cur = Math.min(1, Math.max(0, cur + dir * per));
+      audio.volume = cur;
+      if (Math.abs(cur - target) <= per + 0.005) {
+        audio.volume = target;
+        clearInterval(fader); fader = null;
+        if (target <= 0.005) { nhapVi_dungNhacNen(); }
+      }
+    }, dt);
+  }
+
+  // Mobile: AudioContext tạo lúc load sẽ ở trạng thái 'suspended'; resume trước mỗi lần phát
+  function resumeCtx() {
+    try { if (actx && actx.state === 'suspended') actx.resume(); } catch (e) { }
+  }
+  /* ---------- NE GIONG NOI ----------
+     Trang co ca nhac nen lan loi dan (garden.html) hoac giong that cua Huong
+     (trangvien.html). Truoc day hai ben khong biet nhau nen phat chong len.
+     duck(true) ha nhac xuong muc nen khi bat dau noi, duck(false) tra lai.
+     Dem so nguon dang noi: neu hai loi dan chong nhau thi nhac chi tra lai
+     khi ca hai cung ket thuc. */
+  var soGiongDangNoi = 0;
+  var MUC_NEN = 0.12;          // du nghe nhac, khong at loi
+  function duck(batDau) {
+    soGiongDangNoi = Math.max(0, soGiongDangNoi + (batDau ? 1 : -1));
+    if (audio.paused) return;
+    if (soGiongDangNoi > 0) fadeTo(Math.min(vol, MUC_NEN), 220);
+    else fadeTo(vol, 600);
+  }
+  function dangNeGiongNoi() { return soGiongDangNoi > 0; }
+
+  function playSong(key, opts) {
+    opts = opts || {};
+    var song = SONGS[key];
+    if (!song) return;
+    resumeCtx();
+    var targetVol = typeof opts.vol !== 'undefined' ? opts.vol : vol;
+    if (dangPhat === key && !audio.paused) return;
+    audio.src = song.f;
+    audio.loop = !!opts.loop;
+    // giữ volume hiện tại rồi fade nhẹ tới mức mong muốn - tránh ngắt quãng trên mobile khi bấm liên tục
+    if (audio.volume <= 0.005) audio.volume = Math.max(0.001, targetVol * 0.4);
+    audio.play().then(function () {
+      fadeTo(soGiongDangNoi > 0 ? Math.min(targetVol, MUC_NEN) : Math.min(1, targetVol), 500);
+    }).catch(function () { /* autoplay blocked - user click sau */ });
+    dangPhat = key;
+    // nếu bài hát thuộc mood đang chọn, giữ mood đó để tự động chuyển bài
+    if (dangMood && MOODS[dangMood].bai.indexOf(key) === -1) {
+      dangMood = ''; // bài mới không thuộc mood cũ
+    }
+    capNhatUI();
+  }
+
+  // Tự động chuyển bài khi kết thúc
+  audio.addEventListener('ended', function () {
+    if (audio.loop) return;
+
+    var ds = [];
+    if (dangMood && MOODS[dangMood]) {
+      ds = MOODS[dangMood].bai;
+    } else {
+      // nếu không trong mood, lấy danh sách bài official/songbook làm mặc định
+      ds = ['mekong_rise', 'track04_v2', 'official', 'track05_vi', 'track01', 'track02', 'track03'];
+    }
+
+    var idx = ds.indexOf(dangPhat);
+    var tiep = ds[(idx + 1) % ds.length];
+
+    // Đợi 1 giây rồi phát bài tiếp theo
+    setTimeout(function () {
+      if (audio.paused && dangPhat) {
+        playSong(tiep, { loop: false });
+      }
+    }, 1500);
+  });
+
+  function stopAll() {
+    if (dangPhat) {
+      fadeTo(0, 500);
+      setTimeout(function () { if (!nhacNenActive) { audio.pause(); dangPhat = ''; capNhatUI(); } }, 550);
+    } else {
+      audio.pause();
+    }
+  }
+
+  function tryLuuVol() { try { localStorage.setItem('huong_music_vol', String(vol)); } catch (e) { } }
+
+  /* ---------- WIDGET HONG NOI ---------- */
+  function dungTaoWidget() {
+    var html =
+      '<div id="hm-widget">' +
+        '<button id="hm-nut" title="Nh\u1ea1c \u00b7 Music \u00b7 Musique" aria-label="M\u1edf panel nh\u1ea1c">' +
+          '<span class="hm-ico">\uD83C\uDFB5</span>' +
+          '<span class="hm-bar" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></span>' +
+        '</button>' +
+        '<span class="hm-badge" aria-hidden="true"></span>' +
+        '<div id="hm-panel" class="hm-an">' +
+          '<div class="hm-tren"><b id="hm-title">Nh\u1ea1c c\u1ee7a H\u01b0\u01a1ng</b><button id="hm-dong" aria-label="\u0110\u00f3ng">\u2715</button></div>' +
+          '<div id="hm-mood-chon">' +
+            '<span class="lang-vi">H\u00f4m nay b\u1ea1n th\u1ebf n\u00e0o?</span>' +
+            '<span class="lang-en">How are you today?</span>' +
+            '<span class="lang-fr">Comment allez-vous aujourd\u2019hui ?</span>' +
+          '</div>' +
+          '<div class="hm-moods" id="hm-moods"></div>' +
+          '<div id="hm-hien-tai"></div>' +
+          '<div class="hm-volume"><span>\uD83D\uDD08</span>' +
+            '<input type="range" id="hm-vol" min="0" max="1" step="0.05" value="' + vol.toFixed(2) + '">' +
+            '<span id="hm-vol-num">' + Math.round(vol * 100) + '</span></div>' +
+        '</div>' +
+      '</div>';
+    var div = document.createElement('div');
+    div.innerHTML = html;
+    document.body.appendChild(div.firstElementChild);
+    var widget = document.getElementById('hm-widget');
+    var nut = document.getElementById('hm-nut');
+    var panel = document.getElementById('hm-panel');
+
+    function capNgonNgu() {
+      var l = localStorage.getItem('huong_lang') || NG;
+      NG = l;
+      document.querySelectorAll('#hm-widget .lang-vi,#hm-widget .lang-en,#hm-widget .lang-fr').forEach(function (el) {
+        el.style.display = el.className.indexOf('lang-' + NG) > -1 ? '' : 'none';
+      });
+      capNhatUI();
+    }
+    window.addEventListener('storage', capNgonNgu);
+    window.addEventListener('huong_ng_change', capNgonNgu);
+    setTimeout(capNgonNgu, 50);
+
+    nut.addEventListener('click', function () {
+      panel.classList.toggle('hm-an');
+    });
+    document.getElementById('hm-dong').addEventListener('click', function () {
+      panel.classList.add('hm-an');
+    });
+
+    var moodsEl = document.getElementById('hm-moods');
+    function veMoods() {
+      moodsEl.innerHTML = '';
+      Object.keys(MOODS).forEach(function (mk) {
+        var m = MOODS[mk];
+        var wrap = document.createElement('div');
+        wrap.className = 'hm-mood';
+        wrap.innerHTML =
+          '<button data-mood="' + mk + '">' +
+            '<span class="hm-face">' + m.icon + '</span>' +
+            '<span class="hm-tieude lang-vi">' + m.vi.tieude + '</span>' +
+            '<span class="hm-tieude lang-en">' + m.en.tieude + '</span>' +
+            '<span class="hm-tieude lang-fr">' + m.fr.tieude + '</span>' +
+          '</button>' +
+          '<p class="hm-noi lang-vi">' + m.vi.noi + '</p>' +
+          '<p class="hm-noi lang-en">' + m.en.noi + '</p>' +
+          '<p class="hm-noi lang-fr">' + m.fr.noi + '</p>' +
+          '<div class="hm-ds"></div>';
+        var ds = wrap.querySelector('.hm-ds');
+        m.bai.forEach(function (bk, i) {
+          var b = document.createElement('button');
+          b.className = 'hm-bai' + (i === 0 ? ' hm-dexuat' : '');
+          b.textContent = SONGS[bk].t;
+          b.addEventListener('click', function () {
+            dangMood = mk; // ghi nhớ mood khi chọn bài từ mood
+            playSong(bk, { loop: false });
+          });
+          ds.appendChild(b);
+        });
+        moodsEl.appendChild(wrap);
+      });
+      // hiển thị ngôn ngữ cho nội dung vừa tạo
+      var cur = NG;
+      moodsEl.querySelectorAll('.lang-vi,.lang-en,.lang-fr').forEach(function (el) {
+        el.style.display = el.className.indexOf('lang-' + cur) > -1 ? '' : 'none';
+      });
+    }
+    veMoods();
+
+    document.getElementById('hm-vol').addEventListener('input', function (e) {
+      vol = parseFloat(e.target.value);
+      if (!audio.paused && soGiongDangNoi === 0) audio.volume = vol;
+      tryLuuVol();
+      document.getElementById('hm-vol-num').textContent = Math.round(vol * 100);
+    });
+
+    nhapVi_widget = {
+      capNhat: capNhatUI,
+      playNen: playNhacNen,
+      dungNen: dungNhacNen,
+      getVolume: function() { return vol; },
+      isPaused: function() { return audio.paused; }
+    };
+  }
+
+  function capNhatUI() {
+    var hien = document.getElementById('hm-hien-tai');
+    if (hien) {
+      if (dangPhat && SONGS[dangPhat] && !audio.paused) {
+        hien.innerHTML = '<div class="hm-dangphat">\uD83C\uDFB6 ' +
+          SONGS[dangPhat].t +
+          (nhacNenActive ? ' <small>(' + (khuDangChoi === '__khuon-vien__' ? 'nh\u1ea1c khu\u00f4n vi\u00ean' : 'nh\u1ea1c khu') + ')</small>' : '') +
+          '<button id="hm-pause" title="D\u1eebng">\u23F8</button></div>';
+        var pb = document.getElementById('hm-pause');
+        if (pb) pb.addEventListener('click', stopAll);
+      } else if (!audio.paused && dangPhat) {
+        hien.innerHTML = '<div class="hm-dangphat">\uD83C\uDFB6 \u0111ang ch\u1ea1y\u2026</div>';
+      } else {
+        hien.innerHTML = '';
+      }
+    }
+    /* đĩa quay + badge khi đang phát; dừng lại khi pause */
+    var nut = document.getElementById('hm-nut');
+    var badge = document.querySelector('#hm-widget .hm-badge');
+    if (nut) nut.classList.toggle('hm-phat', !audio.paused && dangPhat);
+    if (badge) badge.classList.toggle('hm-co', !audio.paused && dangPhat);
+  }
+
+  /* nhịp thanh bar nhẹ trong nút nhạc (6 khung/giây - không tốn tài nguyên) */
+  var barTimer = null;
+  function batNhacQua() {
+    if (barTimer) return;
+    barTimer = setInterval(function () {
+      var bars = document.querySelectorAll('#hm-nut.hm-phat .hm-bar span');
+      if (!bars.length) return;
+      var f = getFFT ? getFFT() : null;
+      var base = f ? f.wave : 0;
+      bars.forEach(function (b, i) {
+        var h = f
+          ? 5 + (f.bass * (i % 2 === 0 ? 16 : 6) + f.mid * (i % 2 ? 12 : 4)) * 1.2 + Math.random() * 6
+          : 4 + Math.sin(Date.now() / 400 + i) * 3;
+        b.style.height = Math.min(22, Math.max(4, h)) + 'px';
+      });
+    }, 150);
+  }
+  batNhacQua();
+
+  /* ---------- NHAC NEN THEO KHU ---------- */
+  /* khuId -> bài hát nền phù hợp bối cảnh */
+  var NHAC_KHU = {
+    'hoc-thuat': 'track02',               // Đèn vẫn còn sáng - trầm tĩnh, suy tưởng (khu học thuật)
+    'du-an':      'track04',               // Hai Mươi Sáu Năm Sau - hồi sinh, năng lượng tìm lại ước mơ (khu dự án)
+    'thu-vien':   'track01',               // Je voudrais te parler - nội tâm, đọc trong yên lặng (khu thư viện)
+    'am-nhac':    'track03',               // The Lamp Still Burns - ôm ấp, an ủi (khu âm nhạc)
+    'bang-tin':   'official',              // Je m'appelle Hương - thông điệp tổng hợp (khu bảng tin)
+    'gioi-thieu': 'official',              // Je m'appelle Hương bản đầy đủ - mở đầu chuyến tham quan (khu giới thiệu)
+    'kho-tuong-lai': 'official',            // Je m'appelle Hương - khép chuyến tham quan bằng bài chủ đề (kho tương lai)
+    'khuon-vien':  'tranquien_528'           // Sóng 528Hz - nhạc tần số thư giãn khi dạo ngoài khuôn viên
+  };
+  var khuDangChoi = '';
+
+  /* Nhạc tần số thư giãn xen kẽ 528Hz / 432Hz khi dạo ngoài khuôn viên */
+  var NHAC_KHUONVIEN = ['tranquien_528', 'tranquien_432'];
+  var kvChiSo = 0;
+
+  function playNhacNen(khuId) {
+    var key = NHAC_KHU[khuId];
+    if (!key) return;
+    nhacNenActive = true;
+    if (khuDangChoi === khuId && dangPhat === key && !audio.paused) return;
+    playSong(key, { loop: true, vol: vol * 0.7 });
+    khuDangChoi = khuId;
+  }
+
+  /* Nhạc tần số thư giãn (solfeggio) khi khách dạo ngoài khuôn viên - chưa vào khu nào */
+  function playNhacKhuonVien() {
+    /* Đang phat nhac khuon vien roi thi thoi. Chot cu so sanh dangPhat voi key
+       VUA tinh, ma kvChiSo da tang o lan goi truoc nen key luon la ban KIA -
+       chot khong bao gio giu duoc. Them audio.paused van true ngay sau play()
+       vi play() bat dong bo. Hau qua do duoc: 10 lan nap solfeggio_528 va 9 lan
+       solfeggio_432 trong 6 giay dau, ~38 MB tai thua. Nay xet theo dangPhat co
+       nam trong danh sach nhac khuon vien khong, khong dung audio.paused. */
+    if (khuDangChoi === '__khuon-vien__' && NHAC_KHUONVIEN.indexOf(dangPhat) > -1) return;
+    if (!nhacNenActive) { nhacNenActive = true; }
+    var key = NHAC_KHUONVIEN[kvChiSo % NHAC_KHUONVIEN.length];
+    kvChiSo++;
+    playSong(key, { loop: true, vol: Math.min(vol * 0.45, 0.3) });
+    khuDangChoi = '__khuon-vien__';
+  }
+  function dungNhacNen() {
+    nhacNenActive = false;
+    khuDangChoi = '';
+    fadeTo(0, 450);
+  }
+  function nhapVi_dungNhacNen() {
+    if (nhacNenActive && audio.volume <= 0.005) { audio.pause(); }
+  }
+
+  /* Tự chèn CSS widget nhạc */
+  var cssLink = document.createElement('link');
+  cssLink.rel = 'stylesheet';
+  cssLink.href = 'assets/css/music.css';
+  document.head.appendChild(cssLink);
+
+  /* tự động khôi phục AudioContext khi người dùng chạm trang (đặc biệt trên iOS/Android) */
+  ['pointerdown', 'touchstart', 'click', 'keydown'].forEach(function (ev) {
+    window.addEventListener(ev, function () { resumeCtx(); }, { passive: true, once: false });
+  });
+  /* ---------- KHOI DONG ---------- */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', dungTaoWidget);
+  } else {
+    dungTaoWidget();
+  }
+
+  /* ---------- BAO TIN CHO TRANG ----------
+     Nhac phat qua mot the Audio roi ngoai DOM, nen su kien 'play' cua no khong
+     noi len document - trang khong the biet nhac vua bat. Phat lai mot su kien
+     'huong-nhac' tren document de trang lam viec cua minh (vi du: trang chu tat
+     tieng dai phim dau trang khi nhac nen bat len). */
+  ['play', 'pause', 'ended'].forEach(function (ev) {
+    audio.addEventListener(ev, function () {
+      try {
+        document.dispatchEvent(new CustomEvent('huong-nhac', {
+          detail: { trangthai: ev, bai: dangPhat }
+        }));
+      } catch (e) { /* trinh duyet cu khong co CustomEvent thi thoi */ }
+    });
+  });
+
+  window.HUONG_MUSIC = {
+    playSong: playSong,
+    playNhacKhuonVien: playNhacKhuonVien,
+    stopAll: stopAll,
+    playNhacNen: playNhacNen,
+    dungNhacNen: dungNhacNen,
+    SONGS: SONGS,
+    getFFT: getFFT,
+    duck: duck,
+    dangNeGiongNoi: dangNeGiongNoi,
+    nhacDangPhat: function () { return !!(dangPhat && !audio.paused && audio.volume > 0.005); }
+  };
+})();

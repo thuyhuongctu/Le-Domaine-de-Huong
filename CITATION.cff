@@ -1,0 +1,48 @@
+# Citation metadata. GitHub renders the "Cite this repository" control from this
+# file, and Zenodo reads it when archiving each release.
+# Siêu dữ liệu trích dẫn — GitHub hiện nút "Cite this repository" từ tệp này,
+# và Zenodo dùng nó khi lưu trữ mỗi bản phát hành.
+cff-version: 1.2.0
+message: >-
+  © 2026 Đỗ Thùy Hương. All rights reserved — see LICENSE. The work is
+  published for reading, consultation and citation, not for reuse. If you
+  cite it, please use the reference below. / Bản quyền © 2026 Đỗ Thùy Hương,
+  bảo lưu mọi quyền — xem tệp LICENSE. Công trình được công bố để đọc, tham
+  khảo và trích dẫn, không phát hành theo giấy phép mở.
+type: software
+title: "Le Domaine de Hương (Trang viên tri thức · Knowledge Manor): an interactive 3D scene of a scholar's estate"
+abstract: >-
+  An interactive 3D scene that runs entirely in the browser and makes no
+  network request at all. A visitor walks, cycles or paddles a sampan through
+  eight themed zones of a Mekong-Delta estate — research, library, music,
+  storytelling, news, the main house, the lantern path and a future store —
+  each with its own silhouette, signboard and content panel. The scene carries
+  four lighting states (morning, afternoon, night and a noir mode), an orbiting
+  survey camera, a clustered planting system, a river the sampan is confined
+  to, and five gameplay modules (achievements, side quests, a play loop, a
+  mini-game and a story quest). Narration is the author's own recorded voice in
+  Vietnamese and English. Built from plain HTML, CSS and JavaScript with no
+  build step and no server-side component, and published as a static site.
+authors:
+  - family-names: "Do"
+    given-names: "Thuy Huong"
+    orcid: "https://orcid.org/0000-0002-7711-2487"
+    email: "thuyhuongctu@gmail.com"
+    affiliation: "Can Tho University"
+version: "1.0"
+date-released: 2026-10-21
+repository-code: "https://github.com/thuyhuongctu/Le-Domaine-de-Huong"
+url: "https://thuyhuongctu.github.io/Le-Domaine-de-Huong/"
+# Concept DOI — điền sau khi phát hành v1.0 và Zenodo cấp mã.
+# doi: 10.5281/zenodo.XXXXXXXX
+keywords:
+  - interactive 3D
+  - WebGL
+  - three.js
+  - offline-first
+  - digital scholarship
+  - research dissemination
+  - serious game
+  - bilingual
+  - Mekong Delta
+  - Vietnam

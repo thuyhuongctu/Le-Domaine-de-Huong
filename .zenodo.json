@@ -1,0 +1,28 @@
+{
+  "upload_type": "software",
+  "title": "Le Domaine de Hương (Trang viên tri thức · Knowledge Manor): an interactive 3D scene of a scholar's estate",
+  "description": "<p><strong>An interactive 3D scene that runs entirely in the browser and makes no network request at all.</strong> A visitor walks, cycles or paddles a sampan through a Mekong-Delta estate belonging to a doctoral researcher. Everything is drawn at run time from code; there is no game engine, no build step and no server-side component.</p>\n<p><strong>Eight themed zones</strong> — research, library, music, storytelling, news, the main house, the lantern path and a future store. Each zone has its own silhouette: the enclosure may be a ring, three straight sides or absent entirely, and each carries a distinct vertical landmark (a square tower, an A-frame, a raised stilt roof, a stage arch, a flagpole, a lantern row, a mast) so the zones can be told apart from across the estate.</p>\n<p><strong>Four lighting states</strong> — morning, afternoon, night and a noir mode — each with its own sun, sky and rim-light ratio, shadow frame and fog distance. A survey camera orbits the whole estate on a long lens, clearing the clouds and widening the shadow frame so the composition still holds.</p>\n<p><strong>Three ways to travel.</strong> On foot, by bicycle, or by sampan — and the sampan is confined to the river, tested against the polygon of the water surface itself rather than against a copied formula, so it never ends up on the grass.</p>\n<p><strong>Five gameplay modules</strong> — achievements, side quests, a play loop, a mini-game and a story quest — all of which redraw their text at the moment of painting, so a visitor who switches language mid-session sees the open panel redrawn correctly.</p>\n<p><strong>Narration in the author's own recorded voice</strong>, in Vietnamese and English; English is the default and the visitor's choice is remembered.</p>\n<p><strong>No network calls, measured rather than promised:</strong> no script or stylesheet loaded from outside the repository, no run-time network call, no outgoing request after load (measured in Chromium), and no analytics, advertising or third-party cookies.</p>\n<p>Live version: <a href=\"https://thuyhuongctu.github.io/Le-Domaine-de-Huong/\">thuyhuongctu.github.io/Le-Domaine-de-Huong</a></p>",
+  "creators": [
+    {
+      "name": "Do, Thuy Huong",
+      "orcid": "0000-0002-7711-2487",
+      "affiliation": "Can Tho University"
+    }
+  ],
+  "access_right": "open",
+  "license": "other-closed",
+  "keywords": [
+    "interactive 3D",
+    "WebGL",
+    "three.js",
+    "offline-first",
+    "digital scholarship",
+    "research dissemination",
+    "serious game",
+    "bilingual",
+    "Mekong Delta",
+    "Vietnam"
+  ],
+  "language": "eng",
+  "notes": "Author: thuyhuongctu (Đỗ Thùy Hương). The work is titled \"Le Domaine de Hương\" in French, matching \"Le Bureau de Hương\" (repository Research-Office) by the same author; the repository name, URL and DOI are unaffected. Copyright (C) 2026 Đỗ Thùy Hương. All rights reserved — see LICENSE in the repository. The work is published for reading, consultation and citation; it is NOT released under an open-source or open-content licence.\n\nThird-party components: three.js r128 and its GLTFLoader (MIT); the Kenney Nature Kit 2.1 palm models (CC0); the tower scene in assets/canh/thap.html, derived from ThreeUI by Meng To (MIT); and the Baloo 2 and Be Vietnam Pro typefaces (SIL OFL 1.1). The full inventory, with sources and the extent of any modification, is in THIRD-PARTY.md.\n\nThis release deliberately contains no part of the jointly owned BizOn music set: the fifteen-second Mekong Sunfire excerpt present in the scene on the author's homepage has been removed here, so that the work archived under this DOI is of sole authorship."
+}
