@@ -145,5 +145,5 @@ released under an open licence. Citation metadata is in
 <sub>Đỗ Thùy Hương · PhD candidate, School of Economics, Can Tho University<br>
 <a href="https://jemappellehuong.com/">jemappellehuong.com</a> ·
 <a href="https://orcid.org/0000-0002-7711-2487">ORCID</a> ·
-contact@jemappellehuong.com</sub>
+thuyhuongctu@gmail.com</sub>
 </div>
