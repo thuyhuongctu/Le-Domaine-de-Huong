@@ -2,7 +2,7 @@
    Nâng số CACHE mỗi lần đổi nội dung, nếu không khách cũ vẫn thấy bản cũ.
    Tệp .mp3/.mp4 và assets/canh/thap.html cố ý KHÔNG khai ở đây: nặng, mà
    thiếu chúng thì cảnh vẫn chạy. */
-const CACHE = 'trangvien-v2';
+const CACHE = 'trangvien-v3';
 const CORE = [
   "./",
   "assets/css/achievements.css",
