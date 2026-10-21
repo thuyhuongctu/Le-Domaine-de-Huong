@@ -4,128 +4,145 @@
 
 ### Trang viên tri thức · Knowledge Manor
 
-**Một trang viên 3D chạy thẳng trong trình duyệt, không gọi mạng một lần nào.**
-*An interactive 3D estate that runs in the browser and makes no network request at all.*
+**An interactive 3D estate that runs entirely in the browser and makes no network request at all.**
 
-[![Live](https://img.shields.io/badge/xem_th%E1%BB%AD-tr%E1%BA%A3i_nghi%E1%BB%87m_3D-c45c3a?style=for-the-badge)](https://thuyhuongctu.github.io/Le-Domaine-de-Huong/)
+[![Open the scene](https://img.shields.io/badge/open-the_3D_scene-c45c3a?style=for-the-badge)](https://thuyhuongctu.github.io/Le-Domaine-de-Huong/)
 &nbsp;
-[![Licence](https://img.shields.io/badge/gi%E1%BA%A5y_ph%C3%A9p-b%E1%BA%A3o_l%C6%B0u_m%E1%BB%8Di_quy%E1%BB%81n-3f6f68?style=for-the-badge)](LICENSE)
+[![Licence](https://img.shields.io/badge/licence-all_rights_reserved-3f6f68?style=for-the-badge)](LICENSE)
 
 </div>
 
 ---
 
-## Một phút để hiểu · At a glance
+## At a glance
 
 | | |
 | --- | --- |
-| **Là gì** | Trang viên của một nghiên cứu sinh ở đồng bằng sông Cửu Long, dựng bằng three.js |
-| **Tám khu** | Nghiên cứu · Thư viện · Âm nhạc · Lối kể chuyện · Bảng tin · Nhà chính · Đường đèn lồng · Kho tương lai |
-| **Bốn thời khắc** | sáng · chiều · đêm · noir — mỗi thời khắc một bộ đèn, sương và khung bóng riêng |
-| **Ba phương tiện** | đi bộ · xe đạp · xuồng (xuồng chỉ đi được trên sông) |
-| **Hai thứ tiếng** | Tiếng Việt và tiếng Anh, mặc định tiếng Anh, nhớ lựa chọn của khách |
-| **Lời dẫn** | thu bằng **giọng thật của tác giả**, cả hai thứ tiếng |
-| **Gọi mạng** | **0** — đo bằng Chromium, không một yêu cầu nào ra ngoài sau khi tải |
-| **Cần máy chủ?** | Không. Không có bước dựng, không có phần máy chủ. |
+| **What it is** | The estate of a doctoral researcher in the Mekong Delta, drawn at run time with three.js |
+| **Eight zones** | Research · Library · Music · Storytelling · News · Main house · Lantern path · Future store |
+| **Four lighting states** | morning · afternoon · night · noir — each with its own sun, sky, rim light, shadow frame and fog distance |
+| **Three ways to travel** | on foot · by bicycle · by sampan, which is confined to the river |
+| **Two languages** | Vietnamese and English; English by default, and the visitor's choice is remembered |
+| **Narration** | the **author's own recorded voice**, in both languages |
+| **Network calls** | **none** — measured in Chromium rather than promised: no outgoing request after load |
+| **Server needed?** | No. No build step, no server-side component, no database. |
 
 ---
 
-## Vì sao tách thành kho riêng
+## Why this is a separate repository
 
-Cảnh này cũng chạy trên trang cá nhân của tác giả tại
-<https://jemappellehuong.com/trangvien.html>. Kho riêng này tồn tại để **ranh
-giới tác phẩm gọn lại**: một tác giả, bốn thành phần bên thứ ba đã kiểm kê đủ,
-và không một tệp nào thuộc phần đồng sở hữu với người khác.
+The same scene also runs on the author's homepage at
+<https://jemappellehuong.com/trangvien.html>. This repository exists to make the
+**boundary of the work precise**: one author, four third-party components fully
+inventoried, and not a single file that anyone else co-owns.
 
-Liên kết Zenodo–GitHub lưu trữ ở mức **kho**: mỗi bản phát hành, Zenodo chụp cả
-cây tệp rồi cấp DOI cho ảnh chụp ấy. Nếu lưu trữ từ kho trang cá nhân thì bản
-ghi sẽ gồm cả hai mươi bản thu nhạc và bốn mươi trang khác — tức gộp vào đúng
-những thứ không thuộc tác phẩm này.
+The Zenodo–GitHub link archives at **repository** level: on each release, Zenodo
+takes a snapshot of the whole file tree and mints a DOI for that snapshot.
+Archiving from the homepage repository would therefore sweep in twenty music
+recordings and forty other pages — material that is not part of this work.
 
-Đổi nội dung cảnh thì **phải sửa cả hai bên trong cùng một lần**. Đây là bài học
-đã trả giá một lần với văn phòng nghiên cứu: hai bản lệch nhau ba tuần mới phát
-hiện.
+Three things were deliberately left out:
 
----
+- **A fifteen-second excerpt of «Mekong Sunfire».** Signal cross-correlation
+  against the full recording scored **0.9996** at second 181, against a noise
+  floor of 0.0089 — it is a verbatim excerpt of a recording **jointly owned**
+  with Phan Anh Tú. Keeping it would make the archived work dual-authored.
+- **The shared music library**, trimmed from 34 tracks to the two ambient pieces
+  that belong to the estate; the original list included ten jointly owned tracks.
+- **Three songs and the ecosystem deck** — separate works with their own records.
+  The music panel links to the homepage instead of embedding the files.
 
-## Trong trang viên có gì
-
-<details>
-<summary><b>Tám khu, mỗi khu một dáng riêng</b></summary>
-
-Không khu nào giống khu nào khi nhìn từ xa. Vành bao có thể là vòng tròn, ba
-cạnh thẳng chừa lối vào, hoặc bỏ hẳn; và mỗi khu có **một nét dọc riêng** —
-tháp vuông, khung chữ A, mái nhà sàn cao, vòm sân khấu, cột cờ, dãy đèn lồng,
-cột buồm. Nét dọc là thứ đọc được xa nhất vì nó cắt lên nền trời.
-
-</details>
-
-<details>
-<summary><b>Bốn thời khắc ánh sáng</b></summary>
-
-Sáng, chiều, đêm và một chế độ noir. Thước đo là **tỉ lệ đèn phụ trên đèn
-chính**, giữ quanh 0,31 cho hai buổi ban ngày — đủ để khối có hình, không bẹt.
-Khung bóng chạy theo tầm nhìn chứ không đặt dưới chân nhân vật.
-
-</details>
-
-<details>
-<summary><b>Chế độ ngắm toàn cảnh</b></summary>
-
-Phím `C`. Máy quay rời nhân vật, bay một vòng quanh trang viên ở bán kính 104,
-ống kính 20°. Khung bóng mở rộng, sương kéo xa, mây cất đi — nếu không thì cả
-trang viên chìm trong sương hoặc mất bóng ở phần xa.
-
-</details>
-
-<details>
-<summary><b>Xuồng chỉ đi trên sông</b></summary>
-
-Việc xét xuồng có nằm trên nước không dùng chính đa giác mặt sông, không dùng
-một công thức chép lại. Thả xuồng thì thả vào giữa dòng; chạm bờ thì lái chệch
-dần để lướt dọc bờ.
-
-</details>
-
-<details>
-<summary><b>Năm mô-đun trò chơi</b></summary>
-
-Thành tựu, nhiệm vụ phụ, vòng chơi, trò chơi nhỏ và tuyến truyện. Cả năm dựng
-chữ bằng JavaScript và **đọc ngôn ngữ ngay lúc vẽ**, nên khách đổi tiếng giữa
-chừng thì bảng đang mở vẽ lại đúng.
-
-</details>
+Changes to the scene must be made **in both repositories in the same sitting**.
+That rule was learned the hard way: the two copies of the author's research
+office drifted apart for three weeks before the divergence was noticed.
 
 ---
 
-## Chạy thử tại chỗ
+## Inside the estate
+
+<details>
+<summary><b>Eight zones, no two alike</b></summary>
+
+No zone reads the same as another from a distance. The enclosure may be a ring,
+three straight sides with an opening, or absent altogether; and each zone carries
+a distinct **vertical landmark** — a square tower, an A-frame, a raised stilt
+roof, a stage arch, a flagpole, a lantern row, a mast. The vertical is what reads
+from furthest away, because it is what cuts against the sky.
+
+</details>
+
+<details>
+<summary><b>Four lighting states</b></summary>
+
+Morning, afternoon, night and a noir mode. The measure that matters is the
+**ratio of fill light to key light**, held near 0.31 for the two daytime states —
+enough for form to show without the scene going flat. The shadow frame follows
+the view rather than sitting under the character's feet, so distant geometry in
+shot keeps its shadows.
+
+</details>
+
+<details>
+<summary><b>Survey camera</b></summary>
+
+Press `C`. The camera leaves the character and orbits the estate at a radius of
+104 on a 20° lens. Three things change with it, or the frame breaks: the shadow
+frame widens, the fog pushes back, and the clouds are removed — otherwise a cloud
+drifts across the lens and covers half the shot.
+
+</details>
+
+<details>
+<summary><b>The sampan stays on the river</b></summary>
+
+Whether a point lies on water is tested against the polygon of the water surface
+itself, not against a copied formula. The sampan launches into mid-channel rather
+than at the nearest water, and on touching a bank it steers off gradually to run
+along it.
+
+</details>
+
+<details>
+<summary><b>Five gameplay modules</b></summary>
+
+Achievements, side quests, a play loop, a mini-game and a story quest. All five
+build their text in JavaScript and **read the language at the moment of
+painting**, so a visitor who switches language mid-session sees the open panel
+redrawn correctly.
+
+</details>
+
+---
+
+## Running it locally
 
 ```bash
-python3 -m http.server 8000     # rồi mở http://127.0.0.1:8000/
+python3 -m http.server 8000     # then open http://127.0.0.1:8000/
 ```
 
-Mở thẳng `index.html` bằng trình duyệt cũng chạy, nhưng phục vụ qua HTTP thì
-service worker mới hoạt động.
+Opening `index.html` directly works too, but the service worker only registers
+when the files are served over HTTP.
 
 ---
 
-## Phần không thuộc tác giả
+## Third-party components
 
-three.js r128 và GLTFLoader (MIT) · ba mô hình dừa của Kenney (CC0) · cảnh tháp
-phái sinh từ ThreeUI của Meng To (MIT) · hai bộ chữ Baloo 2 và Be Vietnam Pro
-(SIL OFL 1.1). Kiểm kê đầy đủ kèm nguồn và mức độ chỉnh sửa ở
-[`THIRD-PARTY.md`](THIRD-PARTY.md).
+three.js r128 and its GLTFLoader (MIT) · three Kenney Nature Kit palm models
+(CC0) · the tower scene, derived from ThreeUI by Meng To (MIT) · the Baloo 2 and
+Be Vietnam Pro typefaces (SIL OFL 1.1). The full inventory, with sources and the
+extent of any modification, is in [`THIRD-PARTY.md`](THIRD-PARTY.md).
 
-## Giấy phép và trích dẫn
+## Licence and citation
 
-Bản quyền © 2026 Đỗ Thùy Hương. Bảo lưu mọi quyền — xem [`LICENSE`](LICENSE).
-Công trình công bố để **đọc, tham khảo và trích dẫn**, không phát hành theo
-giấy phép mở. Cách trích dẫn ở [`CITATION.cff`](CITATION.cff).
+Copyright © 2026 Đỗ Thùy Hương. All rights reserved — see [`LICENSE`](LICENSE).
+The work is published so that it can be **read, consulted and cited**; it is not
+released under an open licence. Citation metadata is in
+[`CITATION.cff`](CITATION.cff).
 
 ---
 
 <div align="center">
-<sub>Đỗ Thùy Hương · nghiên cứu sinh, Trường Kinh tế, Đại học Cần Thơ<br>
+<sub>Đỗ Thùy Hương · PhD candidate, School of Economics, Can Tho University<br>
 <a href="https://jemappellehuong.com/">jemappellehuong.com</a> ·
 <a href="https://orcid.org/0000-0002-7711-2487">ORCID</a> ·
 contact@jemappellehuong.com</sub>
