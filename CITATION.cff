@@ -32,7 +32,7 @@ authors:
 version: "1.0.1"
 date-released: 2026-10-21
 repository-code: "https://github.com/thuyhuongctu/Le-Domaine-de-Huong"
-url: "https://thuyhuongctu.github.io/Le-Domaine-de-Huong/"
+url: "https://domaine.jemappellehuong.com/"
 # Concept DOI — represents every version and always resolves to the latest release.
 doi: 10.5281/zenodo.23539409
 keywords:
