@@ -203,7 +203,9 @@
       if (nn) nn.addEventListener('click', function () {
         /* assets/js/music.js dung nut nhac noi #hm-nut; bam ho nguoi doc. */
         var hm = document.getElementById('hm-nut');
-        if (hm) { hm.click(); hm.scrollIntoView({ block: 'nearest' }); }
+        if (hm) { hm.click(); hm.scrollIntoView({ block: 'nearest' }); return; }
+        /* Kho nay khong co music.html, nen dua sang trang Am nhac cua trang chinh. */
+        location.href = 'https://jemappellehuong.com/music.html';
       });
       veDongHo();
     }
@@ -343,14 +345,16 @@
         '<div><a href="https://scholar.google.com/citations?user=jSvAVnsAAAAJ" target="_blank" rel="noopener">Google Scholar</a></div>' +
         '<div><a href="https://www.researchgate.net/profile/Do-Thuy-Huong" target="_blank" rel="noopener">ResearchGate</a></div>' +
         '<div><a href="https://osf.io/m25qs/" target="_blank" rel="noopener">OSF</a></div>' +
-        '<div><a href="https://github.com/thuyhuongctu" target="_blank" rel="noopener">GitHub</a></div></div>' +
+        '<div><a href="https://github.com/thuyhuongctu" target="_blank" rel="noopener">GitHub</a></div>' +
+        '<div><a href="https://www.youtube.com/channel/UCNt0O_5hQ5nxsSGeTfRFAgA" target="_blank" rel="noopener">YouTube</a></div></div>' +
 
         '<div class="sf-col"><div class="sf-ch">' + t('Dự án', 'Projects', 'Projets') + '</div>' +
         '<div><a href="https://thuyhuongctu.github.io/M-AIDA/" target="_blank" rel="noopener">M-AIDA</a></div>' +
-        '<div><a href="https://thuyhuongctu.github.io/BizOn/" target="_blank" rel="noopener">BizOn</a></div>' +
+        '<div><a href="https://bizonland.com/" target="_blank" rel="noopener">BizOn</a></div>' +
         '<div><a href="https://thuyhuongctu.github.io/EnQuiz/" target="_blank" rel="noopener">EnQuiz</a></div>' +
         '<div><a href="https://thuyhuongctu.github.io/ComDraft/" target="_blank" rel="noopener">ComDraft</a></div>' +
         '<div><a href="https://thuyhuongctu.github.io/we-create-tomorrow/" target="_blank" rel="noopener">We Create Tomorrow</a></div>' +
+        '<div><a href="https://thuyhuongctu.github.io/Chansonia/" target="_blank" rel="noopener">Chansonia</a></div>' +
         '<div><a href="https://thuyhuongctu.github.io/Vietnamese-History-Games/" target="_blank" rel="noopener">' + t('Trò Chơi Sử Việt', 'History Games', 'Jeux d\u2019histoire') + '</a></div></div>' +
         '</div>' +
 
@@ -363,12 +367,62 @@
            phát hành lẻ. Trước đây chỉ có trong README và CITATION.cff, tức là
            người đọc trang không thấy đường nào để trích dẫn. */
         '<span>' + t('Trích dẫn trang: ', 'Cite this site: ', 'Citer ce site : ') + '<a href="https://doi.org/10.5281/zenodo.22003853" target="_blank" rel="noopener">DOI 10.5281/zenodo.22003853</a></span>' +
-        '</div></div>' +
+        '</div>' +
+        /* Trang la PWA: service worker tra ban DA LUU truoc roi moi ra mang, nen
+           khach cu van doc duoc khi mat mang - nhung cung co the dang xem ban cu
+           ma khong hay. Nut nay xoa bo nho dem, go dang ky service worker, roi
+           tai lai. Dat o chan trang vi day la cho ghi chu ky thuat, khong chen
+           vao noi dung. */
+        '<div class="sf-moi">' +
+        '<button type="button" class="sf-nut-moi">' +
+        '<svg class="sf-xoay" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.65 2.35A7.95 7.95 0 0 0 8 0C3.58 0 0 3.58 0 8s3.58 8 8 8c3.73 0 6.84-2.55 7.73-6h-2.08A6 6 0 1 1 8 2c1.66 0 3.14.69 4.22 1.78L9 7h7V0l-2.35 2.35z"/></svg>' +
+        '<span class="sf-nhan">' + t('Lấy bản mới nhất', 'Get the latest version', 'Obtenir la dernière version') + '</span>' +
+        '</button>' +
+        '<span class="sf-moi-ghi">' + t(
+          'Trang giữ sẵn một bản để đọc được khi mất mạng. Bấm nút này nếu ngờ mình đang xem bản cũ.',
+          'The site keeps a copy so it works offline. Use this if you suspect you are seeing an old version.',
+          'Le site garde une copie pour fonctionner hors ligne. Utilisez ceci si vous pensez voir une ancienne version.') +
+        '</span></div>' +
+        '</div>' +
         '</div>';
     }
 
     f.innerHTML = noiDung();
     document.body.appendChild(f);
+    /* Gan tren CHINH f, khong gan tren nut: doi ngon ngu thi noiDung() ve lai
+       innerHTML va moi nut ben trong bi thay moi, con f thi khong - nen trinh
+       uy quyen la cach duy nhat song sot qua lan ve lai. */
+    f.addEventListener('click', function (e) {
+      var nut = e.target && e.target.closest ? e.target.closest('.sf-nut-moi') : null;
+      if (!nut || nut.disabled) return;
+      nut.disabled = true;
+      nut.classList.add('dang');
+      var nhan = nut.querySelector('.sf-nhan');
+      if (nhan) nhan.textContent = t('Đang lấy bản mới…', 'Fetching the latest…', 'Récupération…');
+
+      var roi = false;
+      function taiLai() { if (roi) return; roi = true; location.reload(); }
+
+      var viec = [];
+      try {
+        if (window.caches && caches.keys) {
+          viec.push(caches.keys().then(function (ks) {
+            return Promise.all(ks.map(function (k) { return caches.delete(k); }));
+          }));
+        }
+        if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+          viec.push(navigator.serviceWorker.getRegistrations().then(function (rs) {
+            return Promise.all(rs.map(function (r) { return r.unregister(); }));
+          }));
+        }
+      } catch (err) { /* ngu canh khong an toan hoac trinh duyet cu: cu tai lai */ }
+
+      /* Tai lai du mot viec nao do treo: tham nhat van con la lan tai lai thuong. */
+      setTimeout(taiLai, 4000);
+      if (!viec.length) return taiLai();
+      Promise.all(viec).then(taiLai, taiLai);
+    });
+
     veLai.push(function () { f.innerHTML = noiDung(); });
   }
 
