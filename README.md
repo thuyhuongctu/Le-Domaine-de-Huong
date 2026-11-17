@@ -6,7 +6,7 @@
 
 **An interactive 3D estate that runs entirely in the browser and makes no network request at all.**
 
-[![Open the scene](https://img.shields.io/badge/open-the_3D_scene-c45c3a?style=for-the-badge)](https://thuyhuongctu.github.io/Le-Domaine-de-Huong/)
+[![Open the scene](https://img.shields.io/badge/open-the_3D_scene-c45c3a?style=for-the-badge)](https://domaine.jemappellehuong.com/)
 &nbsp;
 [![Licence](https://img.shields.io/badge/licence-all_rights_reserved-3f6f68?style=for-the-badge)](LICENSE)
 
