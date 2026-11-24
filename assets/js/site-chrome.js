@@ -354,8 +354,8 @@
         '<div><a href="https://enquiz.bizonland.com/" target="_blank" rel="noopener">EnQuiz</a></div>' +
         '<div><a href="https://comdraft.jemappellehuong.com/" target="_blank" rel="noopener">ComDraft</a></div>' +
         '<div><a href="https://wct.jemappellehuong.com/" target="_blank" rel="noopener">We Create Tomorrow</a></div>' +
-        '<div><a href="https://thuyhuongctu.github.io/Chansonia/" target="_blank" rel="noopener">Chansonia</a></div>' +
-        '<div><a href="https://thuyhuongctu.github.io/Vietnamese-History-Games/" target="_blank" rel="noopener">' + t('Trò Chơi Sử Việt', 'History Games', 'Jeux d\u2019histoire') + '</a></div></div>' +
+        '<div><a href="https://chansonia.jemappellehuong.com/" target="_blank" rel="noopener">Chansonia</a></div>' +
+        '<div><a href="https://games.jemappellehuong.com/" target="_blank" rel="noopener">' + t('Trò Chơi Sử Việt', 'History Games', 'Jeux d\u2019histoire') + '</a></div></div>' +
         '</div>' +
 
         '</div>' +
