@@ -1,0 +1,15 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.thuyhuongctu.ledomaine",
+      "sha256_cert_fingerprints": [
+        "51:20:D9:56:A9:6E:55:B9:E1:9C:A3:9C:46:BE:3E:05:4D:1C:29:79:0C:6A:2D:F4:8F:73:B4:73:60:38:18:CB",
+        "7F:CF:83:7C:CA:BA:77:40:6C:53:7D:BF:BF:65:83:D1:5B:1C:8D:25:E8:5C:F4:7C:BD:C8:0C:3A:F9:43:5D:9B"
+      ]
+    }
+  }
+]
