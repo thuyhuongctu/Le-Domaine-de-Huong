@@ -14,12 +14,20 @@ concurrency:
   group: pages
   cancel-in-progress: true
 
+# Hai job, không phải một. Ngày 24/11/2026 hai lần dựng liền (#17, #18) hỏng
+# cùng một lỗi: deploy-pages hỏi artifact ngay sau khi tải xong và nhận «No
+# artifacts named "github-pages" were found», dù artifact 17,2 MB đã nằm trong
+# run. API danh sách artifact chưa kịp ghi nhận. Kho Je-mappelle-Huong vấp đúng
+# lỗi này và chữa bằng cách tách job: job sau phải chờ cấp máy mới, đủ chục
+# giây cho API kịp. Đây cũng là khuôn mẫu Pages chính thức của GitHub.
+#
+# ĐỪNG CHẠY LẠI JOB HỎNG để chữa: upload-pages-artifact đặt overwrite: false,
+# mỗi lần chạy lại thêm một artifact cùng tên và run ấy không bao giờ qua được.
+# Muốn phát hành lại thì đẩy một commit mới.
+
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
@@ -30,5 +38,13 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v4
