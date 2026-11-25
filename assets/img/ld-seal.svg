@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="1024" height="1024" role="img" aria-label="Con dau Le Domaine de Huong">
+  <circle cx="50" cy="50" r="49" fill="#c45c3a"/>
+  <circle cx="50" cy="50" r="31" fill="#a54d31"/>
+  <!-- Vanh tren di thuan chieu kim dong ho, chu moc RA NGOAI; vanh duoi di
+       nguoc chieu, chu moc VAO TRONG. Vi the hai ban kinh phai khac nhau thi
+       tam hai dai chu moi ngang nhau - xem muc «textPath tren cung» o CLAUDE.md
+       cua kho chinh. -->
+  <path id="tD" d="M12.33 60.09 A39 39 0 1 1 87.67 60.09" fill="none"/>
+  <path id="dD" d="M7.50 38.61 A44 44 0 1 0 92.50 38.61" fill="none"/>
+  <text font-family="Georgia,'Times New Roman',serif" font-size="7.4" font-weight="700" letter-spacing="1.1" fill="#fffcf5">
+    <textPath href="#tD" startOffset="50%" text-anchor="middle">LE DOMAINE DE HƯƠNG</textPath></text>
+  <text font-family="Georgia,'Times New Roman',serif" font-size="6" letter-spacing="1" fill="#fffcf5" opacity=".88">
+    <textPath href="#dD" startOffset="50%" text-anchor="middle">JE M'APPELLE HƯƠNG</textPath></text>
+  <text x="50" y="66" font-family="Georgia,'Times New Roman',serif" font-style="italic" font-size="46" font-weight="700"
+        text-anchor="middle" fill="#fffcf5">D</text>
+</svg>
